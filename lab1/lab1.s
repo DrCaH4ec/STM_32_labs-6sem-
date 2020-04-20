@@ -21,9 +21,9 @@ Reset_Handler   PROC
                 ENDP
 					
 ;DEFINES OF CONSTANTS				
-X_	EQU 5
-Y_	EQU 10
-Z_	EQU 7
+X_	EQU 0x20
+Y_	EQU 0x05
+Z_	EQU 0x04
 	
 CONST_FOR_XOR EQU 0xff
 
@@ -149,10 +149,10 @@ __mainloop
 		AREA |MY_CONST|, DATA, READONLY
 		ALIGN 4		
 			
-A_		DCD 0
-B_		DCD 1
-C_		DCD 1
-D_		DCD 1
+A_		DCD 0x50
+B_		DCD 0x01
+C_		DCD 0x33
+D_		DCD 0xe2
 
 ;Area of RW data
 		AREA |MY_DATA|, DATA, READWRITE 
