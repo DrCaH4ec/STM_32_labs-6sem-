@@ -8,7 +8,7 @@ void EXTI15_10_IRQHandler(void)
 	EXTI->PR |= EXTI_PR_PR13;			//reset EXTI[13] interrupt
 	NVIC_DisableIRQ(EXTI15_10_IRQn);	//disable EXTI[13] (for safety)
  
-	counter++;							//action
+	counter = (counter >= 100) ? 0 : counter+1;							//action
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn);		//enable EXTI[13]
 }
