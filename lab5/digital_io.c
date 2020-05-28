@@ -32,11 +32,11 @@ void PinMode(GPIO_TypeDef *port, uint8_t pin, uint8_t mode)
 
 void PinPull(GPIO_TypeDef *port, uint8_t pin, uint8_t mode)
 {
-	if(mode == 0b11 || pin > 15)
+	if(mode > 0b10 || pin > 15)
 		return;
 	
 	port->PUPDR = (0x1&mode) ? (port->PUPDR|(1<<pin*2)) : (port->PUPDR&(~(1<<pin*2)));
-	port->MODER = (mode>>1) ? (port->PUPDR|(1<<(pin*2+1))) : (port->PUPDR&(~(1<<(pin*2+1))));
+	port->PUPDR = (mode>>1) ? (port->PUPDR|(1<<(pin*2+1))) : (port->PUPDR&(~(1<<(pin*2+1))));
 }
 
 

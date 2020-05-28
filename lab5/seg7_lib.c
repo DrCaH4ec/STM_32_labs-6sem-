@@ -62,17 +62,40 @@ void PrintDigit(uint8_t val)
 	DigitalWrite(G_PORT, G_N, tmp&(1<<6));		
 }
 
-void PrintNum(uint8_t val)
+void PrintNum(uint8_t val, uint8_t dig)
 {
-	PrintDigit(val/10);
-	DigitalWrite(DIG_1_PORT, DIG_1_N, CommonCA);
-	DigitalWrite(DIG_2_PORT, DIG_2_N, !CommonCA);
-	_delay(50000);
+	switch(dig){
+		
+		case 0:
+			PrintDigit(val/10);
+			DigitalWrite(DIG_1_PORT, DIG_1_N, CommonCA);
+			DigitalWrite(DIG_2_PORT, DIG_2_N, !CommonCA);			
+		break;
+		
+		case 1:
+			PrintDigit(val%10);
+			DigitalWrite(DIG_1_PORT, DIG_1_N, !CommonCA);
+			DigitalWrite(DIG_2_PORT, DIG_2_N, CommonCA);		
+		break;
+		
+		default:
+			return;
+	}
+}
+
+void seg7_init(){
 	
-	PrintDigit(val%10);
-	DigitalWrite(DIG_1_PORT, DIG_1_N, !CommonCA);
-	DigitalWrite(DIG_2_PORT, DIG_2_N, CommonCA);
-	_delay(30000);	
+	PinMode(A_PORT, A_N, GPIO_MODE);
+	PinMode(B_PORT, B_N, GPIO_MODE);
+	PinMode(C_PORT, C_N, GPIO_MODE);
+	PinMode(D_PORT, D_N, GPIO_MODE);
+	PinMode(E_PORT, E_N, GPIO_MODE);
+	PinMode(F_PORT, F_N, GPIO_MODE);
+	PinMode(G_PORT, G_N, GPIO_MODE);
+	PinMode(H_PORT, H_N, GPIO_MODE);
 	
-	//OffDigits();
+	PinMode(DIG_1_PORT, DIG_1_N, GPIO_MODE);
+	PinMode(DIG_2_PORT, DIG_2_N, GPIO_MODE);
+	
+	OffDigits();
 }

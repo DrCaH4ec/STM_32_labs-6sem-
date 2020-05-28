@@ -3,39 +3,64 @@
 
 volatile uint8_t counter = 0;
 
+volatile uint32_t DelayCount = 0;
+
+volatile uint8_t dig = 0;
+
+volatile uint8_t DigCount = 0;
+
 void EXTI15_10_IRQHandler(void)
 {
 	EXTI->PR |= EXTI_PR_PR13;			//reset EXTI[13] interrupt
 	NVIC_DisableIRQ(EXTI15_10_IRQn);	//disable EXTI[13] (for safety)
  
-	counter++;							//action
+	counter = (counter >= 99) ? 0 : counter+1;							//action
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn);		//enable EXTI[13]
 }
 
 
+void SysTick_Handler(void)
+{
+	if(DelayCount > 0)
+		DelayCount--;
+	
+	if(DigCount == 10){
+		PrintNum(counter, dig);
+		dig = !dig;
+		
+		DigCount = 0;
+	}
+	
+	DigCount++;
+}
+
+
+void _delay_ms(uint32_t delay)
+{
+	DelayCount = delay;
+	
+	while(DelayCount);
+}
+
+
 int main(void)
 {
+	
+	SysTick_Config(SystemCoreClock/1000);
+	
+	
 	//enable clock of GPIO
 	GPIO_EN(GPIOA_en);
 	GPIO_EN(GPIOB_en);
 	GPIO_EN(GPIOC_en);
+
+	seg7_init();
 	
-	//set pin mode
-	PinMode(GPIOA, 4, GPIO_MODE);
-	PinMode(GPIOA, 5, GPIO_MODE);
-	PinMode(GPIOA, 6, GPIO_MODE);
-	PinMode(GPIOA, 7, GPIO_MODE);
-	PinMode(GPIOA, 8, GPIO_MODE);
-	PinMode(GPIOA, 9, GPIO_MODE);
-	PinMode(GPIOA, 10, GPIO_MODE);
-	PinMode(GPIOB, 3, GPIO_MODE);
+	PinMode(GPIOC, 13, INPUT_MODE);	//I know that it's default value but it saver
+	PinPull(GPIOC, 13, PU);	//set pull-up
+	
 	PinMode(GPIOC, 0, GPIO_MODE);
-	PinMode(GPIOC, 1, GPIO_MODE);
-	PinMode(GPIOC, 13, INPUT_MODE);
-	
-	
-	PinPull(GPIOC, 13, PU);	//I know that it's default value but it saver
 	
 	
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;			//enable clock on necessary bus
@@ -45,10 +70,17 @@ int main(void)
 	NVIC_EnableIRQ(EXTI15_10_IRQn);					//enable line of interrupt
 	EXTI->PR |= EXTI_PR_PR13;						//reset EXTI[13] interrupt
 
+	
+	NVIC_EnableIRQ(SysTick_Handler);				//enable SysTick interrupt
+
+
 	__enable_irq();									//enable global interrupts
 	
 	while(1)
 	{	
-		PrintNum(counter);	//main action
+		DigitalWrite(GPIOC, 0, HIGH);
+		_delay_ms(500);
+		DigitalWrite(GPIOC, 0, LOW);
+		_delay_ms(500);		
 	}
 }
