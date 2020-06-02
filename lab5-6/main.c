@@ -17,8 +17,6 @@ void EXTI15_10_IRQHandler(void)
 
 	counter = (counter >= 99) ? 0 : counter+1;							//action
 
-	counter = (counter >= 100) ? 0 : counter+1;							//action
-
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn);		//enable EXTI[13]
 }
