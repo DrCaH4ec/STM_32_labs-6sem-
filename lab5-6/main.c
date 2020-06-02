@@ -14,11 +14,11 @@ void EXTI15_10_IRQHandler(void)
 	EXTI->PR |= EXTI_PR_PR13;			//reset EXTI[13] interrupt
 	NVIC_DisableIRQ(EXTI15_10_IRQn);	//disable EXTI[13] (for safety)
  
-<<<<<<< HEAD
+
 	counter = (counter >= 99) ? 0 : counter+1;							//action
-=======
+
 	counter = (counter >= 100) ? 0 : counter+1;							//action
->>>>>>> e60e1fff72be76319d83c1048d2c4baabb88bf9e
+
 	
 	NVIC_EnableIRQ(EXTI15_10_IRQn);		//enable EXTI[13]
 }
